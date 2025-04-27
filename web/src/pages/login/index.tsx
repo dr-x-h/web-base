@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useLogin} from "@/pages/login/hooks.ts";
-import {LockOutlined, UserOutlined} from '@ant-design/icons'
+import {LockOutlined, UserOutlined} from "@ant-design/icons"
 import {Button, Form, Input, message} from "antd";
 import "./index.scss"
 import {useNavigate} from "react-router-dom";

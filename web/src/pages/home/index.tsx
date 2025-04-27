@@ -31,7 +31,7 @@ const Home: React.FC = () => {
         setTimeout(() => navigate("/login"), 1000)
     }
 
-    const items: DescriptionsProps['items'] = [{
+    const items: DescriptionsProps["items"] = [{
         key: "id", label: "ID", children: user?.id
     }, {
         key: "username", label: "用户名", children: user?.username
@@ -43,16 +43,16 @@ const Home: React.FC = () => {
         key: "role", label: "权限", children: user?.role
     },]
 
-    const columns: TableProps<UserType>['columns'] = [{
-        title: 'ID', dataIndex: 'id', key: 'id',
+    const columns: TableProps<UserType>["columns"] = [{
+        title: "ID", dataIndex: "id", key: "id",
     }, {
-        title: '用户名', dataIndex: 'username', key: 'username',
+        title: "用户名", dataIndex: "username", key: "username",
     }, {
-        title: '密码', dataIndex: 'password', key: 'password',
+        title: "密码", dataIndex: "password", key: "password",
     }, {
-        title: '最后登录时间', dataIndex: 'last_login', key: 'last_login',
+        title: "最后登录时间", dataIndex: "last_login", key: "last_login",
     }, {
-        title: '权限组', dataIndex: 'role', key: 'role',
+        title: "权限组", dataIndex: "role", key: "role",
     },];
 
     return (<div className={"home-body"}>
