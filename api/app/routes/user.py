@@ -6,7 +6,6 @@ from flask_login import login_required, login_user, logout_user, current_user
 from api.app.service.user import UserService
 from . import api
 from ..errors import ValidationError
-from ..models.user import User
 from ..utils.hash import to_hash, verify_hash
 from ..utils.response import success, error
 
@@ -14,10 +13,10 @@ from ..utils.response import success, error
 @api.route("/login", methods=["POST"])
 def login():
     if not request.is_json:
-        raise ValidationError("validation error", "请求参数异常")
+        raise ValidationError()
     data = request.get_json()
     if "username" not in data or "password" not in data:
-        raise ValidationError("validation error", "请求参数异常")
+        raise ValidationError()
     user = UserService.get_user_by_username(data["username"])
     if user is None:
         return error(message="用户不不存在或密码错误")
@@ -38,10 +37,10 @@ def logout():
 @api.route("/register", methods=["POST"])
 def add_user():
     if not request.is_json:
-        raise ValidationError("validation error", "请求参数异常")
+        raise ValidationError()
     data = request.get_json()
     if "username" not in data or "password" not in data:
-        raise ValidationError("validation error", "请求参数异常")
+        raise ValidationError()
     user = UserService.get_user_by_username(username=data["username"])
     if user:
         return error(message="用户名已存在")
@@ -71,10 +70,10 @@ def get_user():
 @login_required
 def unregister():
     if not request.is_json:
-        raise ValidationError("validation error", "请求参数异常")
+        raise ValidationError()
     data = request.get_json()
     if "id" not in data:
-        raise ValidationError("validation error", "请求参数异常")
+        raise ValidationError()
     logout_user()
     UserService.remove_user(data["id"])
     return success()

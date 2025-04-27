@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import "./index.scss"
 import {Button, Descriptions, DescriptionsProps, message, Table, TableProps} from "antd";
 import {useGetUser, useGetUsers} from "@/pages/home/hooks.ts";
@@ -14,19 +14,29 @@ interface UserType {
 }
 
 const Home: React.FC = () => {
+    const navigate = useNavigate()
+    const [messageApi, contextHolder] = message.useMessage()
+    const requestContext = [messageApi, navigate]
+
     const {run: getUser, loading: getUserLoading, data: user} = useGetUser()
     const {run: getUsers, loading: getUsersLoading, data: users} = useGetUsers()
     const {run: logout, loading: logoutLoading} = useLogout()
-    const [messageApi, contextHolder] = message.useMessage()
-    const navigate = useNavigate()
+
+    useEffect(() => {
+        getUser(requestContext)
+        getUsers(requestContext)
+    }, [])
+
     const handleGetUserClick = () => {
-        getUser()
+        getUser(requestContext)
     }
+
     const handleGetUsersClick = () => {
-        getUsers()
+        getUsers(requestContext)
     }
+
     const handleLogoutClick = () => {
-        logout()
+        logout(requestContext)
         messageApi.success("已退出登录")
         setTimeout(() => navigate("/login"), 1000)
     }

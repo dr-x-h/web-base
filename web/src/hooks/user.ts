@@ -1,8 +1,9 @@
 import {useRequest} from "ahooks";
-import request from "@/utils/request.ts";
+import {request, setRequestValue} from "@/utils/request.ts";
 
 export const useLogout = () => {
-    return useRequest(async () => {
-        return await request.post("/v1/logout")
+    return useRequest(async ([message, navigate]) => {
+        setRequestValue(message, navigate)
+        return await request.post("/v1/logout") as any
     }, {manual: true,})
 }

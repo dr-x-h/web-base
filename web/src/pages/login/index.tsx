@@ -6,21 +6,14 @@ import "./index.scss"
 import {useNavigate} from "react-router-dom";
 
 const Login: React.FC = () => {
+    const navigate = useNavigate()
+    const [messageApi, contextHolder] = message.useMessage()
+    const requestValue = [messageApi, navigate]
+    const {runAsync, loading} = useLogin()
+
     const [form] = Form.useForm<{ username: string; password: string }>()
     const formValue = Form.useWatch([], form)
-    const [messageApi, contextHolder] = message.useMessage()
-    const {runAsync, loading} = useLogin()
-    const navigate = useNavigate()
-    const handleClick = async () => {
-        try {
-            const data = await runAsync(formValue)
-            messageApi.success("登录成功")
-            localStorage.user = JSON.stringify(data)
-            setTimeout(() => navigate("/"), 1000)
-        } catch (e: any) {
-            messageApi.error(e?.message)
-        }
-    }
+
     const [sendVisible, setSendVisible] = useState(true)
 
     useEffect(() => {
@@ -30,6 +23,13 @@ const Login: React.FC = () => {
             setSendVisible(true)
         }
     }, [formValue?.username, formValue?.password])
+
+    const handleClick = async () => {
+        const data = await runAsync(formValue, requestValue)
+        messageApi.success("登录成功")
+        localStorage.user = JSON.stringify(data)
+        setTimeout(() => navigate("/"), 1000)
+    }
 
     return (<div className={"login_box"}>
         {contextHolder}
