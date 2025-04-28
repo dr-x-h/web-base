@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {useLogin} from "@/pages/login/hooks.ts";
+import {useLogin, useRegister} from "@/pages/login/hooks.ts";
 import {LockOutlined, UserOutlined} from "@ant-design/icons"
 import {Button, Form, Input, message} from "antd";
 import "./index.scss"
@@ -9,12 +9,14 @@ const Login: React.FC = () => {
     const navigate = useNavigate()
     const [messageApi, contextHolder] = message.useMessage()
     const requestValue = [messageApi, navigate]
-    const {runAsync, loading} = useLogin()
+    const {runAsync: login, loading: awaitLogin} = useLogin()
+    const {runAsync: register, loading: awaitRegister} = useRegister()
 
     const [form] = Form.useForm<{ username: string; password: string }>()
     const formValue = Form.useWatch([], form)
 
     const [sendVisible, setSendVisible] = useState(true)
+    const [isLogin, setIsLogin] = useState(true)
 
     useEffect(() => {
         if (formValue?.username && formValue?.password) {
@@ -25,20 +27,32 @@ const Login: React.FC = () => {
     }, [formValue?.username, formValue?.password])
 
     const handleClick = async () => {
-        const data = await runAsync(formValue, requestValue)
-        messageApi.success("登录成功")
-        localStorage.user = JSON.stringify(data)
-        setTimeout(() => navigate("/"), 1000)
+        if (isLogin) {
+            const data = await login(formValue, requestValue)
+            messageApi.success("登录成功")
+            localStorage.user = JSON.stringify(data)
+            setTimeout(() => navigate("/"), 1000)
+        } else {
+            await register(formValue, requestValue)
+            messageApi.success("注册成功")
+            setIsLogin(true)
+        }
+    }
+
+    const onRegisterOrLogin = () => {
+        setIsLogin(i => !i)
+    }
+
+    const formFinish = async (data: any) => {
+        if (data?.keyCode === 13) {
+            await handleClick()
+        }
     }
 
     return (<div className={"login_box"}>
         {contextHolder}
-        <span className={"title"}>Login</span>
-        <div>
-            <span>账号：{formValue?.username || "空"}</span>
-            <span style={{marginLeft: 40}}>密码：{formValue?.password || "空"}</span>
-        </div>
-        <Form form={form} layout={"inline"} disabled={loading}>
+        <span className={"title"}>{isLogin ? "Login" : "Register"}</span>
+        <Form form={form} layout={"inline"} disabled={awaitLogin || awaitRegister} onKeyDown={formFinish}>
             <Form.Item
                 name={"username"}
             >
@@ -50,8 +64,9 @@ const Login: React.FC = () => {
                 <Input prefix={<LockOutlined/>} type="password" placeholder="Password"/>
             </Form.Item>
         </Form>
+        <Button type={"link"} onClick={onRegisterOrLogin}>{isLogin ? "register" : "login"}</Button>
         <Button disabled={sendVisible} style={{width: 75}} onClick={handleClick} type={"primary"}
-                loading={loading}>点击</Button>
+                loading={awaitLogin || awaitRegister}>点击</Button>
     </div>)
 }
 

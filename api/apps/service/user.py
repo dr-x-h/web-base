@@ -20,6 +20,9 @@ class UserService:
         user = User.query.filter_by(username=username).first()
         if user:
             return user
+        user_num = User.query.count()
+        if user_num == 0:
+            role = "admin"
         user = User(id=uuid.uuid4().hex, username=username, password=password, role=role)
         db.session.add(user)
         db.session.commit()
