@@ -20,7 +20,7 @@ const Home: React.FC = () => {
 
     const {run: getUser, loading: getUserLoading, data: user} = useGetUser()
     const {run: getUsers, loading: getUsersLoading, data: users} = useGetUsers()
-    const {run: logout, loading: logoutLoading} = useLogout()
+    const {runAsync: logout, loading: logoutLoading} = useLogout()
 
     useEffect(() => {
         getUser(requestContext)
@@ -35,8 +35,8 @@ const Home: React.FC = () => {
         getUsers(requestContext)
     }
 
-    const handleLogoutClick = () => {
-        logout(requestContext)
+    const handleLogoutClick = async () => {
+        await logout(requestContext)
         messageApi.success("已退出登录")
         setTimeout(() => navigate("/login"), 1000)
     }
