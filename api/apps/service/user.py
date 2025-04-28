@@ -1,7 +1,7 @@
 import uuid
 
-from api import db
-from api.app.models.user import User
+from ..extensions import db
+from ..models.user import User
 
 
 class UserService:

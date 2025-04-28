@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_login import LoginManager
 
-from api.app.config import Config
+from .config import Config
 
 app = None
 
@@ -13,9 +13,9 @@ def create_app(config_default=Config):
         app.config.from_object(config_default)
         app.json.ensure_ascii = False
 
-        from .extensions import db, db_migrate
+        from .extensions import db, migrate
         db.init_app(app)
-        db_migrate.init_app(app, db)
+        migrate.init_app(app, db)
 
         login = LoginManager()
         login.init_app(app)
@@ -29,6 +29,3 @@ def create_app(config_default=Config):
         error_handler(app)
 
     return app
-
-
-__all__ = ['create_app']

@@ -1,5 +1,5 @@
-from api.app.models.user import User
-from api.app.utils.response import error
+from ..models.user import User
+from ..utils.response import error
 
 
 def login_handle(login):

@@ -1,7 +1,7 @@
 from flask import current_app
 
-from api.app.errors import ValidationError
-from api.app.utils.response import error
+from . import ValidationError
+from ..utils.response import error
 
 
 def error_handler(app):

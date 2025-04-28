@@ -3,9 +3,9 @@ from datetime import datetime
 from flask import request
 from flask_login import login_required, login_user, logout_user, current_user
 
-from api.app.service.user import UserService
 from . import api
 from ..errors import ValidationError
+from ..service.user import UserService
 from ..utils.hash import to_hash, verify_hash
 from ..utils.response import success, error
 
