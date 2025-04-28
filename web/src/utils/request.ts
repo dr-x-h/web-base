@@ -43,6 +43,9 @@ const httpCode: { [key: number]: (msg: string) => void } = {
     403: (msg) => {
         message.warning(msg)
     },//
+    405: (msg) => {
+        message.warning(msg)
+    },//
 }
 
 request.interceptors.response.use(//
@@ -55,7 +58,7 @@ request.interceptors.response.use(//
         return Promise.reject(data)
     },//
     error => {
-        httpCode[error?.status]?.(error?.response?.data?.message)
+        httpCode[error?.status]?.(error?.response?.data?.message || error.message)
         return Promise.reject(error)
     },//
 )
