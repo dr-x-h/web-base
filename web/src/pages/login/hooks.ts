@@ -11,6 +11,6 @@ export const useLogin = () => {
 export const useRegister = () => {
     return useRequest(async (param, [message, navigate]) => {
         setRequestValue(message, navigate)
-        return await request.post("/v1/register", param)
+        return await request.post("/v1/user", param)
     }, {manual: true,})
 }

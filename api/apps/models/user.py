@@ -14,5 +14,9 @@ class User(UserMixin, db.Model):
         return f'<User {self.username}>'
 
     def to_dict(self):
-        return {'id': self.id, 'username': self.username, 'password': self.password,
-                'last_login': self.last_login.strftime("%Y-%m-%d %H:%M:%S"), 'role': self.role}
+        if self.last_login:
+            last_login_time = self.last_login.strftime("%Y-%m-%d %H:%M:%S")
+        else:
+            last_login_time = ""
+        return {'id': self.id, 'username': self.username, 'password': self.password, 'last_login': last_login_time,
+                'role': self.role}

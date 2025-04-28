@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import "./index.scss"
 import {Button, Descriptions, DescriptionsProps, message, Table, TableProps} from "antd";
-import {useGetUser, useGetUsers} from "@/pages/home/hooks.ts";
+import {useGetUser, useGetUsers, useSignOut} from "@/pages/home/hooks.ts";
 import {useLogout} from "@/hooks/user.ts";
 import {useNavigate} from "react-router-dom";
 
@@ -21,6 +21,9 @@ const Home: React.FC = () => {
     const {run: getUser, loading: getUserLoading, data: user} = useGetUser()
     const {run: getUsers, loading: getUsersLoading, data: users} = useGetUsers()
     const {runAsync: logout, loading: logoutLoading} = useLogout()
+    const {runAsync: signOut, loading: signOutLoading} = useSignOut()
+
+    const current_user = localStorage.user ? JSON.parse(localStorage.user) : undefined
 
     useEffect(() => {
         getUser(requestContext)
@@ -60,9 +63,24 @@ const Home: React.FC = () => {
     }, {
         title: "密码", dataIndex: "password", key: "password",
     }, {
-        title: "最后登录时间", dataIndex: "last_login", key: "last_login",
+        title: "最后登录时间", dataIndex: "last_login", key: "last_login", render: value => {
+            return value || "-"
+        },
     }, {
         title: "权限组", dataIndex: "role", key: "role",
+    }, {
+        title: "操作", render: value => {
+            const isMe = value.id === current_user?.id
+            const hasRole = current_user?.role === "admin"
+            const handleRemove = async () => {
+                await signOut({id: value?.id}, requestContext)
+                messageApi.success("删除成功")
+                handleGetUsersClick()
+            }
+            return (<div>
+                <Button type={"link"} onClick={handleRemove} disabled={signOutLoading || isMe || !hasRole}>删除</Button>
+            </div>)
+        },
     },];
 
     return (<div className={"home-body"}>

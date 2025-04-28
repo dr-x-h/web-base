@@ -21,9 +21,10 @@ def login():
     if user is None:
         return error(message="用户不不存在或密码错误")
     if verify_hash(data["password"], user.password):
-        UserService.update_user(user.id, last_login=datetime.now())
+        user = UserService.update_user(user.id, last_login=datetime.now())
         login_user(user)
-        return success(data={"username": user.username})
+        user = user.to_dict()
+        return success(data=user)
     return error(message="用户不不存在或密码错误")
 
 
@@ -34,8 +35,8 @@ def logout():
     return success()
 
 
-@api.route("/register", methods=["POST"])
-def add_user():
+@api.route("/user", methods=["POST"])
+def register():
     if not request.is_json:
         raise ValidationError()
     data = request.get_json()
@@ -48,6 +49,33 @@ def add_user():
     return success()
 
 
+@api.route("/user", methods=["GET"])
+@login_required
+def get_user():
+    if user_id := request.args.get("id"):
+        if current_user.role == "admin" or user_id == current_user.id:
+            user = UserService.get_user_by_id(user_id)
+        else:
+            return error(message="权限不足"), 403
+    else:
+        user = UserService.get_user_by_id(current_user.id)
+    user_dict = user.to_dict()
+    return success(data=user_dict)
+
+
+@api.route("/user", methods=["DELETE"])
+@login_required
+def cancel():
+    user_id = request.args.get("id")
+    if not user_id or user_id == current_user.id:
+        UserService.remove_user(current_user.id)
+    user = UserService.get_user_by_id(user_id)
+    if user:
+        UserService.remove_user(user_id)
+        return success()
+    return error(message="用户不存在")
+
+
 @api.route("/users", methods=["GET"])
 @login_required
 def get_users():
@@ -56,24 +84,3 @@ def get_users():
         users_dict = [user.to_dict() for user in users]
         return success(data=users_dict)
     return error(message="权限不足"), 403
-
-
-@api.route("/user", methods=["GET"])
-@login_required
-def get_user():
-    user = UserService.get_user_by_username(current_user.username)
-    user_dict = user.to_dict()
-    return success(data=user_dict)
-
-
-@api.route("/unregister", methods=["DELETE"])
-@login_required
-def unregister():
-    if not request.is_json:
-        raise ValidationError()
-    data = request.get_json()
-    if "id" not in data:
-        raise ValidationError()
-    logout_user()
-    UserService.remove_user(data["id"])
-    return success()

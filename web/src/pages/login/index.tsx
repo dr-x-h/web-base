@@ -35,11 +35,12 @@ const Login: React.FC = () => {
         } else {
             await register(formValue, requestValue)
             messageApi.success("注册成功")
-            setIsLogin(true)
+            onRegisterOrLogin()
         }
     }
 
     const onRegisterOrLogin = () => {
+        form.resetFields()
         setIsLogin(i => !i)
     }
 

@@ -11,6 +11,11 @@ class UserService:
         return users
 
     @staticmethod
+    def get_user_by_id(user_id):
+        user = User.query.filter_by(id=user_id).first()
+        return user
+
+    @staticmethod
     def get_user_by_username(username):
         user = User.query.filter_by(username=username).first()
         return user
@@ -33,6 +38,7 @@ class UserService:
         user = User.query.get(user_id)
         db.session.delete(user)
         db.session.commit()
+        return True
 
     @staticmethod
     def update_user(user_id, username=None, password=None, last_login=None, role=None):
@@ -46,3 +52,4 @@ class UserService:
         if role:
             user.role = role
         db.session.commit()
+        return user

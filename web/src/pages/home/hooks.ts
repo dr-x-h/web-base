@@ -15,3 +15,11 @@ export const useGetUsers = () => {
         return await request.get("/v1/users") as any
     }, {manual: true,})
 }
+
+
+export const useSignOut = () => {
+    return useRequest(async (param, [messageApi, navigate]) => {
+        setRequestValue(messageApi, navigate)
+        return await request.delete("/v1/user", {params: param}) as any
+    }, {manual: true,})
+}
