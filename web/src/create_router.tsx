@@ -11,11 +11,12 @@ export type CustomRoute = RouteObject & {
 }
 
 const route: CustomRoute[] = [
-    {path: "/", element: <HeaderBar/>, children: [
+    {path: "/", meta: {header: true}, element: <HeaderBar/>, children: [
         {index: true, path: "/", meta: {name: "首页",}, element: <Home/>},
         {path: "/about", meta: {name: "关于",}, element: <About/>},
     ]},
-    {path: "/login", element: <Login/>}, {path: "*", element: <Error/>},
+    {path: "/login", element: <Login/>},
+    {path: "*", element: <Error/>},
 ]
 
 export const router = createBrowserRouter(route)
