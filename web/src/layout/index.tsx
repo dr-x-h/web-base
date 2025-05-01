@@ -12,11 +12,15 @@ const HeaderBar: React.FC = () => {
     const [menuItem, setMenuItem] = useState<any[]>([])
 
     useEffect(() => {
-        const menu = routes.find(item => item?.meta?.header)?.children
-            ?.filter((item: CustomRoute) => !item?.meta?.hidden)
+        const menu = []
+        const index = routes.find(item => item?.meta?.header)
+        menu.push({key: index?.path, label: index?.children?.find((item: CustomRoute) => item.index)?.meta?.name})
+        const pages = index?.children
+            ?.filter((item: CustomRoute) => !item?.meta?.hidden && !item?.index)
             .map(item => {
-                return {key: item.path, label: item?.meta?.name}
+                return {key: (index?.path || "/") + item.path, label: item?.meta?.name}
             }) as any[]
+        menu.push(...pages)
         setMenuItem(menu)
     }, [routes])
 

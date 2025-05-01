@@ -45,7 +45,7 @@ const Login: React.FC = () => {
     }
 
     const formFinish = async (data: any) => {
-        if (data?.keyCode === 13) {
+        if (data?.keyCode === 13 && !sendVisible) {
             await handleClick()
         }
     }

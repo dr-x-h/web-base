@@ -78,7 +78,7 @@ const Home: React.FC = () => {
                 handleGetUsersClick()
             }
             return (<div>
-                <Button type={"link"} onClick={handleRemove} disabled={signOutLoading || isMe || !hasRole}>删除</Button>
+                <Button type={"link"} danger onClick={handleRemove} disabled={signOutLoading || isMe || !hasRole}>删除</Button>
             </div>)
         },
     },];
@@ -91,7 +91,7 @@ const Home: React.FC = () => {
             <Button loading={logoutLoading} onClick={handleLogoutClick}>退出登录</Button>
         </div>
         {user && (<Descriptions bordered title={"用户详情"} items={items}/>)}
-        {users && (<Table<UserType> columns={columns} dataSource={users}/>)}
+        {users && (<Table<UserType> rowKey={"id"} columns={columns} dataSource={users}/>)}
     </div>)
 }
 
